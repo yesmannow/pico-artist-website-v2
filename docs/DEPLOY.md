@@ -1,16 +1,23 @@
-# Deploy (Cloudflare Pages)
+# Deploying to Cloudflare Pages
 
-- **Strategy:** Cloudflare Pages via Git integration only. No GitHub Actions deploys.
-- **Node:** 20.x (respect `.nvmrc` / `.node-version` / `package.json` engines).
-- **Build command (local/CI):** `npm run build:ci`
-- **Expected output directory:** `.vercel/output` (guard also checks `.open-next/output`, `dist`, `out` in that order).
+The project is wired for a single deployment path: **Cloudflare Pages + OpenNext**.
 
-## Local validation
-1. `npm install`
-2. `npm run build` (creates output)
-3. `npm run verify:output`
-4. Smoke dev if needed: `npm run dev`
+## Build + output
+- **Build command:** `npm run cf:build`
+- **Output directory:** `.open-next`
+- **Output verification:** `npm run cf:build` runs `npm run verify:output`, which fails the build if `.open-next` or `.open-next/assets` are missing.
 
-## Troubleshooting output directory
-- Run `npm run verify:output` to confirm a recognized output folder exists after build.
-- If the guard fails, align Cloudflare Pages settings so the build command writes to `.vercel/output` (or `.open-next/output` / `dist` / `out`) and rerun the guard.
+## Pages configuration
+Set these values in the Pages project:
+- **Framework preset:** None (use the command above)
+- **Node version:** `20` (also pinned via `.nvmrc` and `.node-version`)
+- **Build output directory:** `.open-next`
+- **Root directory:** repository root
+
+## Local checks
+- Install: `npm install`
+- Development: `npm run dev`
+- Production build (OpenNext): `npm run cf:build`
+- Optional: `npm run preview` (Cloudflare worker preview via OpenNext)
+
+Keep this as the only deploy flow. Do not introduce additional workflows until after the first green Pages deploy.

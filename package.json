@@ -1,0 +1,14 @@
+{
+  "name": "pico-artist-website-v2",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "dev": "node -e \"console.log('Dev server placeholder: add Next.js App Router and update this script.');\"",
+    "build": "node scripts/create-placeholder-output.mjs",
+    "verify:output": "node scripts/verify-build-output.mjs",
+    "build:ci": "npm run build && npm run verify:output"
+  }
+}

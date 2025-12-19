@@ -12,13 +12,18 @@
 
 # testing
 /coverage
+.turbo
+.cache
+.parcel-cache
 
 # next.js
 /.next/
 /out/
+/.vercel/output/
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -41,10 +46,12 @@ yarn-error.log*
 *.tsbuildinfo
 
 # OpenNext
-/.open-next
+/.open-next/
+# keep OpenNext assets out of source control
+/.open-next/output/
 
 # wrangler files
-.wrangler
+.wrangler/
 .dev.vars*
 
 

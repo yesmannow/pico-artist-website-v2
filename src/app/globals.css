@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--background: 240 6% 7%;
+	--foreground: 210 20% 96%;
+	--muted: 240 4% 16%;
+	--muted-foreground: 214 14% 70%;
+	--popover: 240 6% 10%;
+	--popover-foreground: 210 20% 96%;
+	--card: 240 6% 9%;
+	--card-foreground: 210 20% 96%;
+	--border: 240 5% 22%;
+	--input: 240 5% 22%;
+	--primary: 264 80% 68%;
+	--primary-foreground: 255 100% 98%;
+	--secondary: 200 80% 55%;
+	--secondary-foreground: 210 30% 98%;
+	--accent: 160 80% 50%;
+	--accent-foreground: 210 30% 10%;
+	--destructive: 0 84% 60%;
+	--destructive-foreground: 210 20% 96%;
+	--ring: 264 80% 68%;
+	--radius: 0.85rem;
+	--font-sans: "Inter", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
+	background-color: hsl(var(--background));
+	color: hsl(var(--foreground));
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+
+	body {
+		@apply bg-background text-foreground antialiased;
+		font-feature-settings: "liga" 1, "calt" 1;
+	}
+
+	main {
+		background-image: radial-gradient(circle at 10% 20%, rgba(123, 97, 255, 0.08) 0, transparent 35%),
+			radial-gradient(circle at 90% 10%, rgba(87, 227, 232, 0.08) 0, transparent 30%),
+			radial-gradient(circle at 50% 80%, rgba(255, 168, 88, 0.06) 0, transparent 35%);
+		background-repeat: no-repeat;
+	}
+}

@@ -12,6 +12,7 @@ Set these values in the Pages project:
 - **Framework preset:** None (use the command above)
 - **Node version:** `20` (also pinned via `.nvmrc` and `.node-version`)
 - **Build output directory:** `.open-next`
+- Cloudflare Pages may display the output directory as `/.open-next` (leading slash is expected)
 - **Root directory:** repository root
 
 ## Local checks

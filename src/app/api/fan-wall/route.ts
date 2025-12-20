@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
-export const runtime = "edge";
-
 type FanWallEntry = {
 	id: string;
 	name: string;

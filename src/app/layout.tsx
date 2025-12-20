@@ -7,6 +7,7 @@ import MiniPlayer from "@/components/player/MiniPlayer";
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import TransitionWrapper from "@/components/TransitionWrapper";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
@@ -47,7 +48,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						<SiteHeader />
 						<main className="flex-1 pb-12">
 							<GraffitiBG>
-								<div className="container py-10 lg:py-16">{children}</div>
+								<TransitionWrapper>
+									<div className="container py-10 lg:py-16">{children}</div>
+								</TransitionWrapper>
 							</GraffitiBG>
 						</main>
 						<SiteFooter />

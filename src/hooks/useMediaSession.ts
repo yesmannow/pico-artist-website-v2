@@ -20,7 +20,7 @@ export function useMediaSession() {
 		navigator.mediaSession.setActionHandler("pause", togglePlay);
 		navigator.mediaSession.setActionHandler("previoustrack", prev);
 		navigator.mediaSession.setActionHandler("nexttrack", next);
-	}, [track, isPlaying]);
+	}, [track, isPlaying, next, prev, togglePlay]);
 }
 
 

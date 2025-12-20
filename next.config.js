@@ -7,6 +7,9 @@ const nextConfig = {
 	generateBuildId: () => randomUUID().replace(/-/g, ""),
 	// Force the workspace root so lockfiles outside the project don't confuse Next.
 	outputFileTracingRoot: __dirname,
+	images: {
+		formats: ["image/avif", "image/webp"],
+	},
 };
 
 module.exports = nextConfig;

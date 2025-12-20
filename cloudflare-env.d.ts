@@ -7,6 +7,7 @@ declare namespace Cloudflare {
 		WORKER_SELF_REFERENCE: Fetcher /* pico-artist-website-v2 */;
 		IMAGES: ImagesBinding;
 		ASSETS: Fetcher;
+		FAN_WALL: KVNamespace;
 	}
 }
 interface CloudflareEnv extends Cloudflare.Env {}

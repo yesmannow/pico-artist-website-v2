@@ -3,29 +3,62 @@
 @tailwind utilities;
 
 :root {
-	--background: 240 6% 7%;
-	--foreground: 210 20% 96%;
-	--muted: 240 4% 16%;
-	--muted-foreground: 214 14% 70%;
-	--popover: 240 6% 10%;
-	--popover-foreground: 210 20% 96%;
-	--card: 240 6% 9%;
-	--card-foreground: 210 20% 96%;
-	--border: 240 5% 22%;
-	--input: 240 5% 22%;
-	--primary: 264 80% 68%;
-	--primary-foreground: 255 100% 98%;
-	--secondary: 200 80% 55%;
-	--secondary-foreground: 210 30% 98%;
-	--accent: 160 80% 50%;
-	--accent-foreground: 210 30% 10%;
+	--background: 0 0% 7%;
+	--foreground: 0 0% 98%;
+	--muted: 0 0% 16%;
+	--muted-foreground: 0 0% 70%;
+	--popover: 0 0% 10%;
+	--popover-foreground: 0 0% 98%;
+	--card: 0 0% 10%;
+	--card-foreground: 0 0% 98%;
+	--border: 0 0% 26%;
+	--input: 0 0% 26%;
+	--primary: 333 79% 55%;
+	--primary-foreground: 0 0% 100%;
+	--secondary: 281 64% 50%;
+	--secondary-foreground: 0 0% 100%;
+	--accent: 16 100% 58%;
+	--accent-foreground: 0 0% 100%;
 	--destructive: 0 84% 60%;
-	--destructive-foreground: 210 20% 96%;
-	--ring: 264 80% 68%;
-	--radius: 0.85rem;
-	--font-sans: "Inter", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
+	--destructive-foreground: 0 0% 98%;
+	--ring: 333 79% 55%;
+	--radius: 0.95rem;
+	--font-body: "Inter", system-ui, -apple-system, sans-serif;
+	--font-heading: "Bebas Neue", "Anton", sans-serif;
+	--gradient-hero: linear-gradient(135deg, #e91e63, #9c27b0, #ff5722);
+	--gradient-audio: linear-gradient(90deg, #ffeb3b, #e91e63);
+	--paint-yellow: #ffeb3b;
+	--graffiti-orange: #ff5722;
+	--electric-purple: #9c27b0;
+	--neon-pink: #e91e63;
+	--primary-black: #121212;
+	--concrete-gray: #2e2e2e;
 	background-color: hsl(var(--background));
 	color: hsl(var(--foreground));
+}
+
+[data-theme="light"] {
+	--background: 0 0% 98%;
+	--foreground: 0 0% 10%;
+	--muted: 0 0% 88%;
+	--muted-foreground: 0 0% 35%;
+	--card: 0 0% 94%;
+	--card-foreground: 0 0% 10%;
+	--border: 0 0% 82%;
+	--input: 0 0% 82%;
+}
+
+[data-theme="album"] {
+	--background: 275 48% 10%;
+	--foreground: 0 0% 98%;
+	--muted: 273 28% 18%;
+	--muted-foreground: 0 0% 80%;
+	--card: 275 38% 14%;
+	--card-foreground: 0 0% 98%;
+	--border: 275 28% 30%;
+	--input: 275 28% 30%;
+	--primary: 16 100% 58%;
+	--secondary: 333 79% 55%;
 }
 
 @layer base {
@@ -36,13 +69,19 @@
 	body {
 		@apply bg-background text-foreground antialiased;
 		font-feature-settings: "liga" 1, "calt" 1;
+		background: radial-gradient(circle at 10% 20%, rgba(255, 235, 59, 0.04), transparent 28%),
+			radial-gradient(circle at 90% 10%, rgba(233, 30, 99, 0.08), transparent 30%),
+			radial-gradient(circle at 60% 80%, rgba(156, 39, 176, 0.05), transparent 32%), hsl(var(--background));
+		background-attachment: fixed;
 	}
 
 	main {
-		background-image: radial-gradient(circle at 10% 20%, rgba(123, 97, 255, 0.08) 0, transparent 35%),
-			radial-gradient(circle at 90% 10%, rgba(87, 227, 232, 0.08) 0, transparent 30%),
-			radial-gradient(circle at 50% 80%, rgba(255, 168, 88, 0.06) 0, transparent 35%);
+		background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.15)),
+			url("/assets/graffiti-bg.jpg");
+		background-size: cover;
 		background-repeat: no-repeat;
+		background-position: center;
+		background-blend-mode: overlay;
 	}
 }
 
@@ -53,5 +92,42 @@
 @layer components {
 	.now-playing-shadow {
 		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+	}
+
+	.section-title {
+		clip-path: polygon(0 0, 100% 0, 95% 75%, 0 100%);
+		padding: 0.5rem 1rem;
+		color: white;
+		background: var(--gradient-audio);
+		font-size: 2.75rem;
+		font-family: var(--font-heading);
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	.card {
+		border-left: 4px solid #e91e63;
+		background: #1e1e1e;
+		border-radius: 0.5rem;
+		padding: 1rem;
+		transition: box-shadow 0.2s, transform 0.2s;
+	}
+
+	.card:hover {
+		box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+		transform: translateY(-2px);
+	}
+
+	.btn-primary {
+		background: var(--gradient-hero);
+		color: white;
+		border-radius: 0.375rem;
+		padding: 0.75rem 1.5rem;
+		font-family: var(--font-heading);
+		transition: transform 0.15s;
+	}
+
+	.btn-primary:hover {
+		transform: scale(1.05);
 	}
 }

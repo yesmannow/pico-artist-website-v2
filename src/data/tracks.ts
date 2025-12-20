@@ -31,6 +31,6 @@ export const tracks: TrackWithPreview[] = musicTracks.map((track, index) => ({
 	...track,
 	id: `track-${index + 1}`,
 	preview: `/assets/audio/previews/${encodeURIComponent(previewFiles[index % previewFiles.length])}`,
-	art: `/assets/images/tracks/${artFiles[index % artFiles.length]}`,
+	art: track.cover ?? `/assets/images/tracks/${artFiles[index % artFiles.length]}`,
 }));
 

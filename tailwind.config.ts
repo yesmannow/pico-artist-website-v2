@@ -54,7 +54,9 @@ const config: Config = {
 				sm: "calc(var(--radius) - 4px)",
 			},
 			fontFamily: {
-				sans: ["var(--font-sans)", ...fontFamily.sans],
+				sans: ["var(--font-body)", ...fontFamily.sans],
+				body: ["var(--font-body)", ...fontFamily.sans],
+				heading: ["var(--font-heading)", ...fontFamily.sans],
 			},
 			backgroundImage: {
 				"grid-lines": "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0)",

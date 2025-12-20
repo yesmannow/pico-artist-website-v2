@@ -1,52 +1,86 @@
-/**
- * For more details on how to configure Wrangler, refer to:
- * https://developers.cloudflare.com/workers/wrangler/configuration/
- */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "pico-artist-website-v2",
 	"main": ".open-next/worker.js",
-	"compatibility_date": "2025-12-19",
+
+	// --- Compatibility ---
+	"compatibility_date": "2024-12-01",
 	"compatibility_flags": [
-		"nodejs_compat",
-		"global_fetch_strictly_public"
+	  // Node 20 environment consistency
+	  "nodejs_compat",
+	  "nodejs_compat_populate_process_env",
+
+	  // Async context propagation (required by OpenNext)
+	  "bind_asynclocalstorage_snapshot_to_resource",
+
+	  // Streaming and standard Transform API
+	  "transformstream_enable_standard_constructor",
+
+	  // Fetch & security compatibility
+	  "fetch_refuses_unknown_protocols",
+
+	  // FormData uploads for R2 + AI Remix Engine
+	  "formdata_parser_supports_files",
+
+	  // Crypto stability and RSA key support
+	  "crypto_preserve_public_exponent",
+	  "no_strict_crypto_checks",
+
+	  // Optional strict HTTPS-only fetch enforcement
+	  "global_fetch_strictly_public"
 	],
+
+	// --- Asset Handling ---
 	"assets": {
-		"binding": "ASSETS",
-		"directory": ".open-next/assets"
+	  "binding": "ASSETS",
+	  "directory": ".open-next/assets"
 	},
+
+	// --- Image Optimization ---
 	"images": {
-		// Enable image optimization
-		// see https://opennext.js.org/cloudflare/howtos/image
-		"binding": "IMAGES"
+	  "binding": "IMAGES"
 	},
+
+	// --- Services ---
 	"services": [
-		{
-			// Self-reference service binding, the service name must match the worker name
-			// see https://opennext.js.org/cloudflare/caching
-			"binding": "WORKER_SELF_REFERENCE",
-			"service": "pico-artist-website-v2"
-		}
+	  {
+		"binding": "WORKER_SELF_REFERENCE",
+		"service": "pico-artist-website-v2"
+	  }
 	],
+
+	// --- KV Namespace (Fan Wall / Engagement System) ---
+	"kv_namespaces": [
+	  {
+		"binding": "FAN_WALL",
+		"id": "FAN_WALL_KV_ID",
+		"preview_id": "FAN_WALL_KV_PREVIEW_ID"
+	  }
+	],
+
+	// --- R2 Bucket (Media & Assets Storage) ---
+	"r2_buckets": [
+	  {
+		"binding": "MEDIA_BUCKET",
+		"bucket_name": "piko-media"
+	  }
+	],
+
+	// --- Observability ---
 	"observability": {
-		"enabled": true
+	  "enabled": true
+	},
+
+	// --- Environment Variables ---
+	"vars": {
+	  "NODE_VERSION": "20.12.2",
+	  "NODE_ENV": "production",
+	  "OPENAI_API_KEY": "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",
+	  "R2_BUCKET_URL": "https://fd70827948b88fb94c02ae1fcf806fb0.r2.cloudflarestorage.com/piko-media",
+	  "CLOUDFLARE_ACCOUNT_ID": "fd70827948b88fb94c02ae1fcf806fb0",
+	  "AI_IMAGE_CACHE": "true",
+	  "NEXT_TELEMETRY_DISABLED": "1"
 	}
-	/**
-	 * Smart Placement
-	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
-	 */
-	// "placement": {  "mode": "smart" }
-	/**
-	 * Bindings
-	 * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including
-	 * databases, object storage, AI inference, real-time communication and more.
-	 * https://developers.cloudflare.com/workers/runtime-apis/bindings/
-	 */
-	/**
-	 * Environment Variables
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
-	 * Note: Use secrets to store sensitive data.
-	 * https://developers.cloudflare.com/workers/configuration/secrets/
-	 */
-	// "vars": {  "MY_VARIABLE": "production_value" }
-}
+
+	// "placement": { "mode": "smart" } // optional smart placement
+  }

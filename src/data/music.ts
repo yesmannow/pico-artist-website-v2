@@ -20,6 +20,7 @@ export const tracks: Track[] = [
 		mood: "Uplifting",
 		tags: ["synthwave", "retro", "instrumental"],
 		year: 2025,
+		cover: "/assets/skate.jpg",
 	},
 	{
 		slug: "aurora-hush",
@@ -30,6 +31,7 @@ export const tracks: Track[] = [
 		mood: "Atmospheric",
 		tags: ["ambient", "electronic", "vocals"],
 		year: 2025,
+		cover: "/assets/vinyls.jpg",
 	},
 	{
 		slug: "prism-heart",
@@ -40,6 +42,7 @@ export const tracks: Track[] = [
 		mood: "Bright",
 		tags: ["indietronica", "pop", "dance"],
 		year: 2024,
+		cover: "/assets/dj.jpg",
 	},
 	{
 		slug: "afterglow",
@@ -50,6 +53,7 @@ export const tracks: Track[] = [
 		mood: "Cinematic",
 		tags: ["ambient", "cinematic", "downtempo"],
 		year: 2024,
+		cover: "/assets/tubes.jpg",
 	},
 	{
 		slug: "starlit-echoes",
@@ -60,6 +64,7 @@ export const tracks: Track[] = [
 		mood: "Dreamy",
 		tags: ["lofi", "electronic", "instrumental"],
 		year: 2023,
+		cover: "/assets/graffiti-bg.jpg",
 	},
 ];
 

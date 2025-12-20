@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Pause, Play } from "lucide-react";
 
@@ -25,11 +26,9 @@ export default function MiniPlayer() {
 				className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-between bg-slate-900/90 px-4 py-2 text-white backdrop-blur-xl md:hidden"
 			>
 				<div className="flex items-center gap-3 overflow-hidden">
-					<img
-						src={track.art}
-						alt={track.title}
-						className="h-10 w-10 shrink-0 rounded-md object-cover"
-					/>
+					<div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md border border-white/10">
+						<Image src={track.art} alt={track.title} fill sizes="48px" className="object-cover" priority />
+					</div>
 					<div className="truncate">
 						<div className="text-sm font-semibold">{track.title}</div>
 						<div className="text-xs opacity-70">{track.artist}</div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Pause, Play, SkipBack, SkipForward, X } from "lucide-react";
 
@@ -24,7 +25,9 @@ export default function NowPlayingBar() {
 				transition={{ type: "spring", stiffness: 200, damping: 20 }}
 				className="fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-4 rounded-2xl bg-slate-900/80 px-6 py-3 text-white shadow-xl backdrop-blur-xl now-playing-shadow"
 			>
-				<img src={track.art} alt={track.title} className="h-12 w-12 rounded-md object-cover" />
+				<div className="relative h-12 w-12 overflow-hidden rounded-md border border-white/10">
+					<Image src={track.art} alt={track.title} fill sizes="64px" className="object-cover" priority />
+				</div>
 				<div className="flex flex-col">
 					<span className="font-semibold">{track.title}</span>
 					<span className="text-sm opacity-70">{track.artist}</span>

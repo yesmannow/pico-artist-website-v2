@@ -1,66 +1,94 @@
-import Image from "next/image";
+"use client";
 
-import GraffitiBG from "@/components/GraffitiBG";
-import { PlaybackOverlay } from "@/components/PlaybackOverlay";
+import { useEffect, useState } from "react";
+
 import { SectionMotion } from "@/components/section-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { videos } from "@/data/videos";
 
-export const metadata = {
-	title: "Videos",
-	description: "Visualizers, live takes, and studio breakdowns.",
+const CHANNEL_ID = "UCD2ybRyk6b1pQDfOtq2MYIw";
+const FALLBACK_EMBEDS = [
+	"https://www.youtube.com/embed?listType=user_uploads&list=pikofg-unamasmusic-1203",
+	"https://www.youtube.com/embed?listType=playlist&list=UCD2ybRyk6b1pQDfOtq2MYIw",
+];
+
+type YouTubeSearchItem = {
+	id?: { videoId?: string };
+	snippet?: { title?: string };
+};
+
+type YouTubeSearchResponse = {
+	items?: YouTubeSearchItem[];
 };
 
 export default function VideosPage() {
-	return (
-		<GraffitiBG image="/assets/vinyls.jpg">
-			<div className="relative">
-				<PlaybackOverlay />
-				<SectionMotion className="space-y-8">
-					<div className="flex flex-col gap-3">
-						<h1 className="font-heading text-5xl uppercase tracking-[0.12em]">Videos</h1>
-						<p className="max-w-2xl text-lg text-muted-foreground">
-							Embedded YouTube clips, light on weight, heavy on graffiti overlays. Visualizer glow responds to the global audio player.
-						</p>
-					</div>
+	const [videos, setVideos] = useState<{ id: string; title: string }[]>([]);
 
-					<div className="grid gap-6 md:grid-cols-2">
-						{videos.map((video) => (
-							<Card key={video.title} className="overflow-hidden border-border/60 bg-black/70">
-								<div className="relative h-48 w-full overflow-hidden">
-									<Image
-										src={video.poster ?? "/assets/vinyls.jpg"}
-										alt={video.title}
-										fill
-										sizes="50vw"
-										className="object-cover opacity-80"
-										priority
-									/>
-									<div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-background/90" />
-									<div className="absolute left-4 top-4 rounded-full bg-primary/80 px-3 py-1 text-xs uppercase tracking-[0.16em] text-white">
-										New
-									</div>
-								</div>
-								<CardHeader>
-									<CardTitle>{video.title}</CardTitle>
-									<CardDescription>{video.description}</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<div className="aspect-video overflow-hidden rounded-xl border border-border/60">
-										<iframe
-											src={video.url}
-											title={video.title}
-											className="h-full w-full"
-											allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-											allowFullScreen
-										/>
-									</div>
-								</CardContent>
-							</Card>
-						))}
-					</div>
-				</SectionMotion>
-			</div>
-		</GraffitiBG>
+	useEffect(() => {
+		const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
+		if (!apiKey) return;
+
+		const controller = new AbortController();
+
+		(async () => {
+			try {
+				const res = await fetch(
+					`https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=6&type=video`,
+					{ signal: controller.signal }
+				);
+				const data = (await res.json()) as YouTubeSearchResponse;
+
+				setVideos(
+					data.items?.flatMap((v) =>
+						v?.id?.videoId
+							? [
+									{
+										id: v.id.videoId,
+										title: v?.snippet?.title ?? "Untitled",
+									},
+							  ]
+							: []
+					) ?? []
+				);
+			} catch (err) {
+				if (err instanceof Error && err.name === "AbortError") return;
+				console.error("YouTube API error:", err);
+			}
+		})();
+
+		return () => controller.abort();
+	}, []);
+
+	return (
+		<SectionMotion className="min-h-screen bg-black px-6 py-20 text-center text-white">
+			<h1 className="mb-10 text-4xl font-bold">📺 Videos</h1>
+
+			{videos.length > 0 ? (
+				<div className="grid gap-10 md:grid-cols-2">
+					{videos.map((v) => (
+						<div key={v.id} className="overflow-hidden rounded-2xl shadow-lg">
+							<iframe
+								className="aspect-video w-full"
+								src={`https://www.youtube.com/embed/${v.id}`}
+								title={v.title}
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+								allowFullScreen
+							/>
+							<p className="mt-2 text-sm opacity-80">{v.title}</p>
+						</div>
+					))}
+				</div>
+			) : (
+				<div className="grid gap-10 md:grid-cols-2">
+					{FALLBACK_EMBEDS.map((url) => (
+						<iframe
+							key={url}
+							className="aspect-video w-full rounded-2xl"
+							src={url}
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+							allowFullScreen
+						/>
+					))}
+				</div>
+			)}
+		</SectionMotion>
 	);
 }

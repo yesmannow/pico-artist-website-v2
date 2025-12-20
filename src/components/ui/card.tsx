@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion, type HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+type CardProps = HTMLMotionProps<"div">;
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(({ className, ...props }, ref) => (
 	<motion.div
 		ref={ref}
 		whileHover={{

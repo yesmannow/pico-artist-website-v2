@@ -38,7 +38,7 @@ export async function generateGraffitiImage(prompt: string): Promise<GraffitiGen
 			n: 1,
 		});
 
-		const imageUrl = result.data[0]?.url || null;
+		const imageUrl = result.data?.[0]?.url ?? null;
 
 		return {
 			imageUrl,

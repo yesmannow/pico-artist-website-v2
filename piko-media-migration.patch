@@ -1,0 +1,462 @@
+diff --git a/.npmrc b/.npmrc
+new file mode 100644
+index 0000000..450b1e7
+--- /dev/null
++++ b/.npmrc
+@@ -0,0 +1,3 @@
++omit=optional
++
++
+diff --git a/package.json b/package.json
+index ac04a46..8d8d4bf 100644
+--- a/package.json
++++ b/package.json
+@@ -7,7 +7,7 @@
+ 	},
+ 	"scripts": {
+ 		"dev": "next dev --turbopack",
+-		"build": "next build",
++		"build": "node scripts/next-build.mjs",
+ 		"cf:build": "opennextjs-cloudflare build && npm run verify:output",
+ 		"start": "next start",
+ 		"lint": "next lint",
+diff --git a/scripts/next-build.mjs b/scripts/next-build.mjs
+new file mode 100644
+index 0000000..a0c007a
+--- /dev/null
++++ b/scripts/next-build.mjs
+@@ -0,0 +1,13 @@
++import { spawnSync } from "node:child_process";
++
++// Cursor/Cloudflare dev tooling can set this internal Next env var. When it is
++// present, Next loads config from JSON (functions stripped) which breaks builds
++// that expect function-based defaults like generateBuildId.
++delete process.env.__NEXT_PRIVATE_STANDALONE_CONFIG;
++
++const args = ["node_modules/next/dist/bin/next", "build", ...process.argv.slice(2)];
++const result = spawnSync(process.execPath, args, { stdio: "inherit", env: process.env });
++
++process.exit(result.status ?? 1);
++
++
+diff --git a/src/ai/generateGraffiti.ts b/src/ai/generateGraffiti.ts
+index f1024f3..b220e44 100644
+--- a/src/ai/generateGraffiti.ts
++++ b/src/ai/generateGraffiti.ts
+@@ -38,7 +38,7 @@ export async function generateGraffitiImage(prompt: string): Promise<GraffitiGen
+ 			n: 1,
+ 		});
+ 
+-		const imageUrl = result.data[0]?.url || null;
++		const imageUrl = result.data?.[0]?.url ?? null;
+ 
+ 		return {
+ 			imageUrl,
+diff --git a/src/app/gallery/page.tsx b/src/app/gallery/page.tsx
+index 8a8eb42..69ef772 100644
+--- a/src/app/gallery/page.tsx
++++ b/src/app/gallery/page.tsx
+@@ -1,32 +1,25 @@
+-"use client";
++import Image from "next/image";
+ 
+-import { useEffect } from "react";
++import { SectionMotion } from "@/components/section-motion";
+ 
+-import AudioPlayer from "@/components/player/AudioPlayer";
+-import NowPlayingBar from "@/components/player/NowPlayingBar";
+-import { tracks } from "@/data/tracks";
+-import { usePlayerStore } from "@/lib/stores/playerStore";
++const GALLERY_IMAGES = [
++	"/assets/images/artist/channels4_profile.jpg",
++	"/assets/images/artist/close_up_face.jpg",
++	"/assets/images/artist/on_the_mic.jpg",
++	"/assets/images/artist/piko_musician_bio_photo.jpg",
++];
+ 
+ export default function GalleryPage() {
+-	const { setPlaylist, playTrack } = usePlayerStore();
+-
+-	useEffect(() => {
+-		setPlaylist(tracks);
+-	}, [setPlaylist]);
+-
+ 	return (
+-		<main className="flex flex-col gap-8 p-8 pb-24">
+-			{tracks.map((track, index) => (
+-				<div
+-					key={track.id}
+-					className="flex cursor-pointer flex-col gap-4"
+-					onClick={() => playTrack(index)}
+-				>
+-					<h2 className="text-lg font-bold text-white">{track.title}</h2>
+-					<AudioPlayer src={track.preview} title={track.title} trackIndex={index} />
+-				</div>
+-			))}
+-			<NowPlayingBar />
+-		</main>
++		<SectionMotion className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-900 px-6 py-20 text-white">
++			<h1 className="mb-10 text-center text-4xl font-bold">🖼️ Gallery</h1>
++			<div className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
++				{GALLERY_IMAGES.map((src) => (
++					<div key={src} className="relative aspect-square overflow-hidden rounded-2xl bg-white/5 shadow-lg">
++						<Image src={src} alt="PikoFG gallery image" fill sizes="(min-width: 1024px) 25vw, 50vw" className="object-cover" />
++					</div>
++				))}
++			</div>
++		</SectionMotion>
+ 	);
+ }
+diff --git a/src/app/music/page.tsx b/src/app/music/page.tsx
+index f41b66e..b52bc15 100644
+--- a/src/app/music/page.tsx
++++ b/src/app/music/page.tsx
+@@ -1,90 +1,26 @@
+-import Image from "next/image";
+-import Link from "next/link";
++"use client";
+ 
+-import GraffitiBG from "@/components/GraffitiBG";
+ import { SectionMotion } from "@/components/section-motion";
+-import { Button } from "@/components/ui/button";
+-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+-import { tracks } from "@/data/music";
+-
+-export const metadata = {
+-	title: "Music",
+-	description: "Listen to Piko Artist releases and demos.",
+-};
++import { tracks } from "@/data/music-data";
+ 
+ export default function MusicPage() {
+ 	return (
+-		<GraffitiBG image="/assets/vinyls.jpg">
+-			<SectionMotion className="space-y-8">
+-				<div className="relative overflow-hidden rounded-3xl border border-border/60 bg-black/70 p-6 shadow-2xl">
+-					<Image
+-						src="/assets/dj.jpg"
+-						alt="DJ visual"
+-						fill
+-						sizes="100vw"
+-						className="object-cover opacity-35 mix-blend-lighten blur-[1px]"
+-						priority
+-					/>
+-					<div className="absolute inset-0 bg-gradient-to-br from-black/80 via-background/60 to-primary/20" />
+-					<div className="relative space-y-3">
+-						<p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Albums & Singles</p>
+-						<h1 className="font-heading text-5xl uppercase tracking-[0.12em]">Music</h1>
+-						<p className="max-w-3xl text-lg text-muted-foreground">
+-							Instrumentals, vocal experiments, and cinematic cuts. Graffiti overlays mix with vinyl static for a live AV-ready
+-							playlist.
+-						</p>
+-						<div className="flex flex-wrap gap-3">
+-							<Button asChild>
+-								<Link href="/videos">Visualizers</Link>
+-							</Button>
+-							<Button asChild variant="outline" className="border-primary/60 text-primary">
+-								<Link href="/events">See events</Link>
+-							</Button>
+-						</div>
++		<SectionMotion className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black px-6 py-20 text-white">
++			<h1 className="mb-10 text-center text-4xl font-bold">🎵 Music</h1>
++			<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
++				{tracks.map((track) => (
++					<div
++						key={track.title}
++						className="rounded-2xl bg-gray-800/50 p-6 shadow-lg backdrop-blur-sm transition-transform hover:scale-105"
++					>
++						<h2 className="mb-2 text-xl font-semibold">{track.title}</h2>
++						<audio controls className="w-full">
++							<source src={track.file} type="audio/mpeg" />
++							Your browser does not support audio.
++						</audio>
+ 					</div>
+-				</div>
+-
+-				<div className="grid gap-6 md:grid-cols-2">
+-					{tracks.map((track) => (
+-						<Card key={track.slug} className="overflow-hidden border-border/60 bg-black/70">
+-							<div className="relative h-40 w-full overflow-hidden">
+-								<Image
+-									src={track.cover ?? "/assets/graffiti-bg.jpg"}
+-									alt={track.title}
+-									fill
+-									sizes="50vw"
+-									className="object-cover opacity-80"
+-								/>
+-								<div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-background/90" />
+-								<div className="absolute right-3 top-3 rounded-full bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.16em] text-white">
+-									{track.length}
+-								</div>
+-							</div>
+-							<CardHeader>
+-								<CardTitle className="flex items-center justify-between text-2xl">
+-									<span>{track.title}</span>
+-									<span className="text-sm font-medium text-muted-foreground">{track.year}</span>
+-								</CardTitle>
+-								<CardDescription>{track.description}</CardDescription>
+-							</CardHeader>
+-							<CardContent className="space-y-4">
+-								<div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+-									<span className="rounded-full bg-muted/60 px-3 py-1">Length {track.length}</span>
+-									<span className="rounded-full bg-muted/60 px-3 py-1">{track.mood}</span>
+-									{track.tags.map((tag) => (
+-										<span key={tag} className="rounded-full bg-muted/60 px-3 py-1">
+-											{tag}
+-										</span>
+-									))}
+-								</div>
+-								<Button asChild className="w-full">
+-									<Link href={`/music/${track.slug}`}>Open details</Link>
+-								</Button>
+-							</CardContent>
+-						</Card>
+-					))}
+-				</div>
+-			</SectionMotion>
+-		</GraffitiBG>
++				))}
++			</div>
++		</SectionMotion>
+ 	);
+ }
+diff --git a/src/app/videos/page.tsx b/src/app/videos/page.tsx
+index 23d8636..72591a8 100644
+--- a/src/app/videos/page.tsx
++++ b/src/app/videos/page.tsx
+@@ -1,66 +1,94 @@
+-import Image from "next/image";
++"use client";
++
++import { useEffect, useState } from "react";
+ 
+-import GraffitiBG from "@/components/GraffitiBG";
+-import { PlaybackOverlay } from "@/components/PlaybackOverlay";
+ import { SectionMotion } from "@/components/section-motion";
+-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+-import { videos } from "@/data/videos";
+ 
+-export const metadata = {
+-	title: "Videos",
+-	description: "Visualizers, live takes, and studio breakdowns.",
++const CHANNEL_ID = "UCD2ybRyk6b1pQDfOtq2MYIw";
++const FALLBACK_EMBEDS = [
++	"https://www.youtube.com/embed?listType=user_uploads&list=pikofg-unamasmusic-1203",
++	"https://www.youtube.com/embed?listType=playlist&list=UCD2ybRyk6b1pQDfOtq2MYIw",
++];
++
++type YouTubeSearchItem = {
++	id?: { videoId?: string };
++	snippet?: { title?: string };
++};
++
++type YouTubeSearchResponse = {
++	items?: YouTubeSearchItem[];
+ };
+ 
+ export default function VideosPage() {
++	const [videos, setVideos] = useState<{ id: string; title: string }[]>([]);
++
++	useEffect(() => {
++		const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
++		if (!apiKey) return;
++
++		const controller = new AbortController();
++
++		(async () => {
++			try {
++				const res = await fetch(
++					`https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=6&type=video`,
++					{ signal: controller.signal }
++				);
++				const data = (await res.json()) as YouTubeSearchResponse;
++
++				setVideos(
++					data.items?.flatMap((v) =>
++						v?.id?.videoId
++							? [
++									{
++										id: v.id.videoId,
++										title: v?.snippet?.title ?? "Untitled",
++									},
++							  ]
++							: []
++					) ?? []
++				);
++			} catch (err) {
++				if (err instanceof Error && err.name === "AbortError") return;
++				console.error("YouTube API error:", err);
++			}
++		})();
++
++		return () => controller.abort();
++	}, []);
++
+ 	return (
+-		<GraffitiBG image="/assets/vinyls.jpg">
+-			<div className="relative">
+-				<PlaybackOverlay />
+-				<SectionMotion className="space-y-8">
+-					<div className="flex flex-col gap-3">
+-						<h1 className="font-heading text-5xl uppercase tracking-[0.12em]">Videos</h1>
+-						<p className="max-w-2xl text-lg text-muted-foreground">
+-							Embedded YouTube clips, light on weight, heavy on graffiti overlays. Visualizer glow responds to the global audio player.
+-						</p>
+-					</div>
++		<SectionMotion className="min-h-screen bg-black px-6 py-20 text-center text-white">
++			<h1 className="mb-10 text-4xl font-bold">📺 Videos</h1>
+ 
+-					<div className="grid gap-6 md:grid-cols-2">
+-						{videos.map((video) => (
+-							<Card key={video.title} className="overflow-hidden border-border/60 bg-black/70">
+-								<div className="relative h-48 w-full overflow-hidden">
+-									<Image
+-										src={video.poster ?? "/assets/vinyls.jpg"}
+-										alt={video.title}
+-										fill
+-										sizes="50vw"
+-										className="object-cover opacity-80"
+-										priority
+-									/>
+-									<div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-background/90" />
+-									<div className="absolute left-4 top-4 rounded-full bg-primary/80 px-3 py-1 text-xs uppercase tracking-[0.16em] text-white">
+-										New
+-									</div>
+-								</div>
+-								<CardHeader>
+-									<CardTitle>{video.title}</CardTitle>
+-									<CardDescription>{video.description}</CardDescription>
+-								</CardHeader>
+-								<CardContent>
+-									<div className="aspect-video overflow-hidden rounded-xl border border-border/60">
+-										<iframe
+-											src={video.url}
+-											title={video.title}
+-											className="h-full w-full"
+-											allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+-											allowFullScreen
+-										/>
+-									</div>
+-								</CardContent>
+-							</Card>
+-						))}
+-					</div>
+-				</SectionMotion>
+-			</div>
+-		</GraffitiBG>
++			{videos.length > 0 ? (
++				<div className="grid gap-10 md:grid-cols-2">
++					{videos.map((v) => (
++						<div key={v.id} className="overflow-hidden rounded-2xl shadow-lg">
++							<iframe
++								className="aspect-video w-full"
++								src={`https://www.youtube.com/embed/${v.id}`}
++								title={v.title}
++								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
++								allowFullScreen
++							/>
++							<p className="mt-2 text-sm opacity-80">{v.title}</p>
++						</div>
++					))}
++				</div>
++			) : (
++				<div className="grid gap-10 md:grid-cols-2">
++					{FALLBACK_EMBEDS.map((url) => (
++						<iframe
++							key={url}
++							className="aspect-video w-full rounded-2xl"
++							src={url}
++							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
++							allowFullScreen
++						/>
++					))}
++				</div>
++			)}
++		</SectionMotion>
+ 	);
+ }
+diff --git a/src/components/LightingScene.tsx b/src/components/LightingScene.tsx
+index 7de0f70..a5862e4 100644
+--- a/src/components/LightingScene.tsx
++++ b/src/components/LightingScene.tsx
+@@ -141,9 +141,7 @@ function FloatingParticles() {
+ 			<bufferGeometry>
+ 				<bufferAttribute
+ 					attach="attributes-position"
+-					count={particleCount}
+-					array={positions}
+-					itemSize={3}
++					args={[positions, 3]}
+ 				/>
+ 			</bufferGeometry>
+ 			<pointsMaterial size={0.05} color="#ff00aa" transparent opacity={0.6} sizeAttenuation />
+diff --git a/src/components/ui/button.tsx b/src/components/ui/button.tsx
+index ed5a247..64ee85e 100644
+--- a/src/components/ui/button.tsx
++++ b/src/components/ui/button.tsx
+@@ -1,6 +1,6 @@
+ import * as React from "react";
+ import { Slot } from "@radix-ui/react-slot";
+-import { cva, type VariantProps } from "class-variance-authority";
++import { cva } from "class-variance-authority";
+ 
+ import { cn } from "@/lib/utils";
+ 
+diff --git a/src/components/ui/card.tsx b/src/components/ui/card.tsx
+index fc7414b..56777d9 100644
+--- a/src/components/ui/card.tsx
++++ b/src/components/ui/card.tsx
+@@ -1,10 +1,12 @@
+ "use client";
+ 
+ import * as React from "react";
+-import { motion } from "framer-motion";
++import { motion, type HTMLMotionProps } from "framer-motion";
+ import { cn } from "@/lib/utils";
+ 
+-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
++type CardProps = HTMLMotionProps<"div">;
++
++const Card = React.forwardRef<HTMLDivElement, CardProps>(({ className, ...props }, ref) => (
+ 	<motion.div
+ 		ref={ref}
+ 		whileHover={{
+diff --git a/src/data/music-data.ts b/src/data/music-data.ts
+new file mode 100644
+index 0000000..200d6ef
+--- /dev/null
++++ b/src/data/music-data.ts
+@@ -0,0 +1,33 @@
++export const tracks = [
++	{ title: "Ganja", file: "/assets/audio/full/Ganja.mp3" },
++	{ title: "Gunster", file: "/assets/audio/full/Gunster.mp3" },
++	{ title: "Im Sorry", file: "/assets/audio/full/Im Sorry.mp3" },
++	{ title: "Jardin De Rosas", file: "/assets/audio/full/Jardin De Rosas.mp3" },
++	{ title: "Los 5", file: "/assets/audio/full/Los 5.mp3" },
++	{ title: "Me Cuentan", file: "/assets/audio/full/Me Cuentan.mp3" },
++	{ title: "Noches Enteras", file: "/assets/audio/full/Noches Enteras.mp3" },
++	{ title: "Party", file: "/assets/audio/full/Party.mp3" },
++	{ title: "Quejas", file: "/assets/audio/full/Quejas.mp3" },
++	{ title: "Sentimientos", file: "/assets/audio/full/Sentimientos.mp3" },
++	{ title: "Sin Rencores", file: "/assets/audio/full/Sin Rencores.mp3" },
++	{ title: "Te Perdi", file: "/assets/audio/full/Te Perdi.mp3" },
++	{ title: "Te Prometo", file: "/assets/audio/full/Te Prometo.mp3" },
++	{ title: "Tortas De Jamon", file: "/assets/audio/full/Tortas De Jamon.mp3" },
++	{ title: "Un Dia Mas", file: "/assets/audio/full/Un Dia Mas.mp3" },
++	{ title: "12_05", file: "/assets/audio/full/12_05.mp3" },
++	{ title: "Amor Sincero", file: "/assets/audio/full/Amor Sincero.mp3" },
++	{ title: "Amores Perdidos", file: "/assets/audio/full/Amores Perdidos.mp3" },
++	{ title: "Bungalow", file: "/assets/audio/full/Bungalow.mp3" },
++	{ title: "Corazon Y Mente", file: "/assets/audio/full/Corazon Y Mente.mp3" },
++	{ title: "Crussin", file: "/assets/audio/full/Crussin.mp3" },
++	{ title: "Dejate Llevar", file: "/assets/audio/full/Dejate Llevar.mp3" },
++	{ title: "El Don", file: "/assets/audio/full/El Don.mp3" },
++	{ title: "Entre Humos", file: "/assets/audio/full/Entre Humos.mp3" },
++	{ title: "F-7", file: "/assets/audio/full/F-7.mp3" },
++	{ title: "Falle", file: "/assets/audio/full/Falle.mp3" },
++];
++
++// Optional R2 URL format:
++// file: "https://piko-media.r2.dev/assets/audio/full/Ganja.mp3"
++
++

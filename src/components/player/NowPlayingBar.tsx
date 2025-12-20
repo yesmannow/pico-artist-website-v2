@@ -3,11 +3,14 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Pause, Play, SkipBack, SkipForward, X } from "lucide-react";
 
+import { useMediaSession } from "@/hooks/useMediaSession";
 import { usePlayerStore } from "@/lib/stores/playerStore";
 
 export default function NowPlayingBar() {
 	const { playlist, currentIndex, isPlaying, togglePlay, next, prev, stop } = usePlayerStore();
 	const track = currentIndex !== null ? playlist[currentIndex] : null;
+
+	useMediaSession();
 
 	if (!track) return null;
 

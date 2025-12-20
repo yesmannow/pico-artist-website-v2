@@ -1,12 +1,16 @@
 "use client";
 
-import { usePlayerStore } from "@/lib/stores/playerStore";
 import { AnimatePresence, motion } from "framer-motion";
 import { Pause, Play } from "lucide-react";
+
+import { useMediaSession } from "@/hooks/useMediaSession";
+import { usePlayerStore } from "@/lib/stores/playerStore";
 
 export default function MiniPlayer() {
 	const { playlist, currentIndex, isPlaying, togglePlay } = usePlayerStore();
 	const track = currentIndex !== null ? playlist[currentIndex] : null;
+
+	useMediaSession();
 
 	if (!track) return null;
 

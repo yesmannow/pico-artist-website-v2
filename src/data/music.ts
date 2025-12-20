@@ -1,6 +1,7 @@
 export type Track = {
 	slug: string;
 	title: string;
+	artist: string;
 	description: string;
 	length: string;
 	mood: string;
@@ -13,6 +14,7 @@ export const tracks: Track[] = [
 	{
 		slug: "midnight-drive",
 		title: "Midnight Drive",
+		artist: "Piko",
 		description: "Neon-soaked synthwave for late-night city cruises.",
 		length: "3:42",
 		mood: "Uplifting",
@@ -22,6 +24,7 @@ export const tracks: Track[] = [
 	{
 		slug: "aurora-hush",
 		title: "Aurora Hush",
+		artist: "Piko",
 		description: "Glacial pads and distant vocals building toward a euphoric drop.",
 		length: "4:18",
 		mood: "Atmospheric",
@@ -31,6 +34,7 @@ export const tracks: Track[] = [
 	{
 		slug: "prism-heart",
 		title: "Prism Heart",
+		artist: "Piko",
 		description: "Shimmering arps, crisp drums, and a warm analog bassline.",
 		length: "3:58",
 		mood: "Bright",
@@ -40,6 +44,7 @@ export const tracks: Track[] = [
 	{
 		slug: "afterglow",
 		title: "Afterglow",
+		artist: "Piko",
 		description: "Slow-blooming chords with a cinematic, widescreen feel.",
 		length: "5:06",
 		mood: "Cinematic",
@@ -49,6 +54,7 @@ export const tracks: Track[] = [
 	{
 		slug: "starlit-echoes",
 		title: "Starlit Echoes",
+		artist: "Piko",
 		description: "Reverberant plucks and pulsating bass under a drifting melody.",
 		length: "4:02",
 		mood: "Dreamy",

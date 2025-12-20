@@ -5,6 +5,8 @@ const { initOpenNextCloudflareForDev } = require("@opennextjs/cloudflare");
 const nextConfig = {
 	// Explicit build ID generator to avoid undefined config defaults.
 	generateBuildId: () => randomUUID().replace(/-/g, ""),
+	// Force the workspace root so lockfiles outside the project don't confuse Next.
+	outputFileTracingRoot: __dirname,
 };
 
 module.exports = nextConfig;

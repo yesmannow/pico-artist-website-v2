@@ -28,7 +28,6 @@ export default function AudioPlayer({ src, title, trackIndex }: AudioPlayerProps
 			waveColor: "#cbd5e1",
 			progressColor: "#3b82f6",
 			height: 80,
-			responsive: true,
 		});
 		wavesurfer.current.load(src);
 		return () => wavesurfer.current?.destroy();

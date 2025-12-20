@@ -45,7 +45,13 @@ export const usePlayerStore = create<PlayerState>()(
 			name: "piko-player-store",
 			partialize: (state) => ({ currentIndex: state.currentIndex }),
 			storage: createJSONStorage(() =>
-				typeof window === "undefined" ? undefined : sessionStorage,
+				typeof window === "undefined"
+					? {
+							getItem: () => null,
+							setItem: () => {},
+							removeItem: () => {},
+					  }
+					: sessionStorage,
 			),
 		},
 	),

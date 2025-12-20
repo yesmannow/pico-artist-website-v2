@@ -29,3 +29,34 @@
 🔜 Next (Phase 5):
 - Integrate playlist / queue system
 - Add "Now Playing" component with motion transitions
+
+## Phase 6 — Persistent Playback + Mini Player
+
+✅ Implemented:
+- Zustand persistence (sessionStorage)
+- Mobile MiniPlayer with Framer Motion transitions
+- Seamless route-based playback continuity
+
+🚫 Deferred:
+- Cross-tab sync (localStorage layer)
+- Volume control & seek bar UI
+- MediaSession API (for mobile lockscreen controls)
+
+🔜 Next (Phase 7):
+- Optional MediaSession API integration
+- Add `Now Playing` metadata updates for PWA
+
+## Phase 5 — Playlist + Now Playing Controller
+
+✅ Implemented:
+- Zustand-based global playlist store
+- Floating "Now Playing" controller with Framer Motion transitions
+- Integrated with AudioPlayer + Gallery
+
+🚫 Deferred:
+- Persistent playback across routes (will require URL state store)
+- Volume control + waveform seeking
+
+🔜 Next (Phase 6):
+- Optional persistence layer (sessionStorage)
+- Responsive mini-player for mobile

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import MiniPlayer from "@/components/player/MiniPlayer";
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						<SiteFooter />
 					</div>
 				</SmoothScrollProvider>
+				<MiniPlayer />
 			</body>
 		</html>
 	);

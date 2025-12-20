@@ -23,6 +23,7 @@
 		"@radix-ui/react-slot": "^1.2.4",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
+		"framer-motion": "^12.23.26",
 		"lenis": "^1.3.16",
 		"lucide-react": "^0.562.0",
 		"motion": "^12.23.26",
@@ -31,7 +32,8 @@
 		"react-dom": "19.1.4",
 		"tailwind-merge": "^3.4.0",
 		"tailwindcss-animate": "^1.0.7",
-		"wavesurfer.js": "^7.12.1"
+		"wavesurfer.js": "^7.12.1",
+		"zustand": "^5.0.9"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",

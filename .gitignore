@@ -56,3 +56,7 @@ yarn-error.log*
 
 
 !.dev.vars.example
+
+# audio assets (keep large libraries local only)
+public/assets/audio/full/
+public/assets/audio/**/*.mp3

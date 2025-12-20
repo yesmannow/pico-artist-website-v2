@@ -49,3 +49,9 @@
 .waveform > wave {
 	border-radius: 4px;
 }
+
+@layer components {
+	.now-playing-shadow {
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+	}
+}

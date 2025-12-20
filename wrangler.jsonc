@@ -2,91 +2,44 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "pico-artist-website-v2",
 	"main": ".open-next/worker.js",
-
-	// --- Compatibility ---
-	"compatibility_date": "2025-12-19",
+	"compatibility_date": "2024-12-01",
 	"compatibility_flags": [
-	  // Node 20 environment consistency
 	  "nodejs_compat",
 	  "nodejs_compat_populate_process_env",
-
-	  // Async context propagation (required by OpenNext)
-	  "bind_asynclocalstorage_snapshot_to_resource",
-
-	  // Streaming and standard Transform API
-	  "transformstream_enable_standard_constructor",
-
-	  // Fetch & security compatibility
-	  "fetch_refuses_unknown_protocols",
-
-	  // FormData uploads for R2 + AI Remix Engine
-	  "formdata_parser_supports_files",
-
-	  // Crypto stability and RSA key support
-	  "crypto_preserve_public_exponent",
 	  "no_strict_crypto_checks",
-
-	  // Optional strict HTTPS-only fetch enforcement
 	  "global_fetch_strictly_public"
 	],
-
-	// --- Asset Handling ---
 	"assets": {
 	  "binding": "ASSETS",
 	  "directory": ".open-next/assets"
 	},
-
-	// --- Image Optimization ---
-	"images": {
-	  "binding": "IMAGES"
-	},
-
-	// --- Services (Worker Self-Reference) ---
+	"images": { "binding": "IMAGES" },
 	"services": [
 	  {
 		"binding": "WORKER_SELF_REFERENCE",
 		"service": "pico-artist-website-v2"
 	  }
 	],
-
-	// --- KV Namespace (Fan Wall / Engagement System) ---
 	"kv_namespaces": [
 	  {
 		"binding": "FAN_WALL",
 		"id": "967da3c77f7e4315bde027e19968c3d7"
 	  }
 	],
-
-	// --- R2 Bucket (Media & Assets Storage) ---
 	"r2_buckets": [
 	  {
 		"binding": "MEDIA_BUCKET",
 		"bucket_name": "piko-media"
 	  }
 	],
-
-	// --- Observability ---
-	"observability": {
-	  "enabled": true
-	},
-
-	// --- Environment Variables ---
+	"observability": { "enabled": true },
 	"vars": {
 	  "NODE_VERSION": "20.12.2",
 	  "NODE_ENV": "production",
-
-	  // 🔑 OpenAI API Key (server-side only)
-	  "OPENAI_API_KEY": "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",
-
-	  // 🌩️ Cloudflare R2 Media Storage
+	  "OPENAI_API_KEY": "YOUR_KEY",
 	  "R2_BUCKET_URL": "https://fd70827948b88fb94c02ae1fcf806fb0.r2.cloudflarestorage.com/piko-media",
 	  "CLOUDFLARE_ACCOUNT_ID": "fd70827948b88fb94c02ae1fcf806fb0",
-
-	  // 🧠 AI Remix & Build Flags
 	  "AI_IMAGE_CACHE": "true",
 	  "NEXT_TELEMETRY_DISABLED": "1"
 	}
-
-	// Optional: Smart Placement for lower latency
-	// "placement": { "mode": "smart" }
   }

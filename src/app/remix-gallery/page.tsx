@@ -146,7 +146,7 @@ export default function RemixGalleryPage() {
 							</Button>
 						</div>
 						<p className="text-xs text-muted-foreground">
-							Tip: Try mood words like "chill", "hype", "dark", "neon", or describe a vibe.
+							Tip: Try mood words like {"\"chill\""}, {"\"hype\""}, {"\"dark\""}, {"\"neon\""}, or describe a vibe.
 						</p>
 					</CardContent>
 				</Card>

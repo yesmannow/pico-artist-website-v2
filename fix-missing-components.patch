@@ -1,0 +1,159 @@
+diff --git a/src/app/fan-wall/page.tsx b/src/app/fan-wall/page.tsx
+index 1234567..abcdef0 100644
+--- a/src/app/fan-wall/page.tsx
++++ b/src/app/fan-wall/page.tsx
+@@ -1,6 +1,10 @@
+ "use client";
+
+ import React from "react";
+-// import GraffitiBG from "@/components/GraffitiBG";
+-// import { SectionMotion } from "@/components/section-motion";
+-// import { Button } from "@/components/ui/button";
++import GraffitiBG from "@/components/GraffitiBG";
++import { SectionMotion } from "@/components/section-motion";
++import { Button } from "@/components/ui/button";
++
++// New: All missing components restored and animated with Framer Motion
++
+ export default function FanWallPage() {
+   return (
+     <div className="relative min-h-screen overflow-hidden">
+-      {/* <GraffitiBG /> */}
+-      {/* <SectionMotion>Fan Wall</SectionMotion> */}
+-      {/* <Button>Say hi</Button> */}
++      <GraffitiBG />
++      <SectionMotion>
++        <div className="flex flex-col items-center justify-center text-center py-20 text-white">
++          <h1 className="text-4xl font-bold mb-6">Fan Wall</h1>
++          <p className="text-gray-300 max-w-md mb-8">
++            Drop your thoughts, art, or shoutouts — let’s make this wall come alive.
++          </p>
++          <Button variant="primary" size="lg">Add Your Tag</Button>
++        </div>
++      </SectionMotion>
+     </div>
+   );
+ }
+diff --git a/src/components/GraffitiBG.tsx b/src/components/GraffitiBG.tsx
+new file mode 100644
+--- /dev/null
++++ b/src/components/GraffitiBG.tsx
+@@ -0,0 +1,39 @@
++"use client";
++
++import { motion } from "framer-motion";
++
++export default function GraffitiBG() {
++  return (
++    <div className="absolute inset-0 -z-10 overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
++      <motion.div
++        className="absolute top-0 left-0 w-[140%] h-[140%] bg-[radial-gradient(circle_at_30%_20%,#ff4fa3_0%,transparent_60%)] opacity-20"
++        animate={{ rotate: [0, 360] }}
++        transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
++      />
++      <motion.div
++        className="absolute bottom-0 right-0 w-[160%] h-[160%] bg-[radial-gradient(circle_at_70%_80%,#4fc3ff_0%,transparent_70%)] opacity-25"
++        animate={{ rotate: [360, 0] }}
++        transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
++      />
++      <motion.div
++        className="absolute top-1/2 left-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,#cfff4f_0%,transparent_60%)] opacity-15 blur-3xl"
++        animate={{ scale: [1, 1.05, 1], opacity: [0.15, 0.25, 0.15] }}
++        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
++      />
++    </div>
++  );
++}
+diff --git a/src/components/section-motion.tsx b/src/components/section-motion.tsx
+new file mode 100644
+--- /dev/null
++++ b/src/components/section-motion.tsx
+@@ -0,0 +1,27 @@
++"use client";
++
++import { motion } from "framer-motion";
++import { ReactNode } from "react";
++
++type SectionMotionProps = {
++  children: ReactNode;
++  delay?: number;
++  className?: string;
++};
++
++export function SectionMotion({
++  children,
++  delay = 0.1,
++  className = "",
++}: SectionMotionProps) {
++  return (
++    <motion.section
++      initial={{ opacity: 0, y: 30 }}
++      whileInView={{ opacity: 1, y: 0 }}
++      transition={{ duration: 0.8, delay, ease: "easeOut" }}
++      viewport={{ once: true, amount: 0.3 }}
++      className={`relative z-10 ${className}`}
++    >
++      {children}
++    </motion.section>
++  );
++}
+diff --git a/src/components/ui/button.tsx b/src/components/ui/button.tsx
+new file mode 100644
+--- /dev/null
++++ b/src/components/ui/button.tsx
+@@ -0,0 +1,50 @@
++"use client";
++
++import { motion } from "framer-motion";
++import { forwardRef } from "react";
++import { cn } from "@/lib/utils";
++
++export interface ButtonProps
++  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
++  variant?: "primary" | "outline" | "ghost";
++  size?: "sm" | "md" | "lg";
++}
++
++export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
++  ({ className, variant = "primary", size = "md", ...props }, ref) => {
++    const baseStyles =
++      "inline-flex items-center justify-center rounded-2xl font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
++
++    const variants = {
++      primary:
++        "bg-gradient-to-r from-pink-500 via-blue-500 to-lime-400 text-black hover:brightness-110",
++      outline:
++        "border border-gray-600 text-gray-100 hover:bg-gray-800/30 hover:border-gray-400",
++      ghost:
++        "text-gray-300 hover:bg-gray-700/30 hover:text-white border border-transparent",
++    };
++
++    const sizes = {
++      sm: "px-3 py-1 text-sm",
++      md: "px-4 py-2 text-base",
++      lg: "px-6 py-3 text-lg",
++    };
++
++    return (
++      <motion.button
++        ref={ref}
++        whileTap={{ scale: 0.96 }}
++        whileHover={{ scale: 1.03 }}
++        className={cn(baseStyles, variants[variant], sizes[size], className)}
++        {...props}
++      />
++    );
++  }
++);
++
++Button.displayName = "Button";
+diff --git a/src/lib/utils.ts b/src/lib/utils.ts
+new file mode 100644
+--- /dev/null
++++ b/src/lib/utils.ts
+@@ -0,0 +1,5 @@
++// Utility class combiner function
++export function cn(...classes: (string | boolean | undefined)[]) {
++  return classes.filter(Boolean).join(" ");
++}
++

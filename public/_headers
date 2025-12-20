@@ -2,3 +2,11 @@
 # https://opennext.js.org/cloudflare/caching#static-assets-caching
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable
+
+/assets/audio/*
+  cache-control: public, max-age=604800
+  accept-ranges: bytes
+
+/audio/*
+  cache-control: public, max-age=604800
+  accept-ranges: bytes

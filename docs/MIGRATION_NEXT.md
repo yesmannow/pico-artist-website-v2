@@ -13,3 +13,19 @@
 - Migrate `src/data` (track metadata)
 - Migrate `src/lib/media` (`slugify`, `listLocalAudio`, `pickTrackArt`)
 - Integrate player/visualizer components after build stability verified
+
+## Phase 4 — Audio Player + Visualizer Integration
+
+✅ Implemented:
+- Client-only `AudioPlayer` using Wavesurfer.js
+- Integrated `GalleryPage` track playback
+- No SSR or hydration conflicts on Cloudflare Pages
+
+🚫 Deferred:
+- Playlist management
+- Full visualizer modes (FFT, canvas-based)
+- Audio file CDN linking (use local preview only)
+
+🔜 Next (Phase 5):
+- Integrate playlist / queue system
+- Add "Now Playing" component with motion transitions

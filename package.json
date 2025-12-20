@@ -3,22 +3,27 @@
 	"version": "0.1.0",
 	"private": true,
 	"engines": {
-		"node": ">=20"
+		"node": ">=20.0.0 <21"
 	},
 	"scripts": {
 		"dev": "next dev --turbopack",
+		"prebuild": "npm run lint && npm run type-check || true",
 		"build": "node scripts/next-build.mjs",
 		"cf:build": "opennextjs-cloudflare build && npm run verify:output",
+		"build:sanity": "node ./scripts/cloudflare-sanity-check.js",
+		"sync:env": "node ./scripts/env-sync.js",
 		"start": "next start",
 		"lint": "next lint",
+		"type-check": "tsc --noEmit",
 		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
 		"upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
 		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts",
-		"verify:output": "node scripts/verify-output.mjs"
+		"verify:output": "node scripts/verify-output.mjs",
+		"prepare": "husky install"
 	},
 	"dependencies": {
-		"@opennextjs/cloudflare": "^1.14.4",
+		"@opennextjs/cloudflare": "1.14.4",
 		"@radix-ui/react-dialog": "^1.1.15",
 		"@radix-ui/react-slot": "^1.2.4",
 		"@react-three/drei": "^10.7.7",
@@ -39,6 +44,7 @@
 		"tailwindcss-animate": "^1.0.7",
 		"three": "^0.182.0",
 		"wavesurfer.js": "^7.12.1",
+		"zod": "3.24.1",
 		"zustand": "^5.0.9"
 	},
 	"devDependencies": {
@@ -47,11 +53,13 @@
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
 		"@types/wavesurfer.js": "^6.0.12",
-		"autoprefixer": "^10.4.23",
+		"autoprefixer": "10.4.23",
 		"eslint": "^9",
-		"eslint-config-next": "15.4.6",
-		"postcss": "^8.4.49",
-		"tailwindcss": "^3.4.14",
+		"eslint-config-next": "15.5.9",
+		"husky": "8.0.3",
+		"lint-staged": "15.2.10",
+		"postcss": "8.4.49",
+		"tailwindcss": "3.4.14",
 		"typescript": "^5",
 		"wrangler": "^4.56.0"
 	}

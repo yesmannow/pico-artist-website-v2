@@ -2,7 +2,6 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "pico-artist-website-v2",
 	"pages_build_output_dir": ".open-next",
-	"main": ".open-next/worker.js",
 	"compatibility_date": "2024-12-01",
 	"compatibility_flags": [
 	  "nodejs_compat",
@@ -10,11 +9,6 @@
 	  "no_strict_crypto_checks",
 	  "global_fetch_strictly_public"
 	],
-	"assets": {
-	  "binding": "STATIC_ASSETS",
-	  "directory": ".open-next/assets"
-	},
-	"images": { "binding": "IMAGES" },
 	"services": [
 	  {
 		"binding": "WORKER_SELF_REFERENCE",

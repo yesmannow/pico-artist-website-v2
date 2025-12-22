@@ -8,10 +8,10 @@ The project is wired for a single deployment path: **Cloudflare Pages + OpenNext
 - **Output verification:** `npm run cf:build` runs `npm run verify:output`, which fails the build if `.open-next` or `.open-next/assets` are missing.
 
 ## Wrangler configuration
-The `wrangler.jsonc` file must include these critical properties for Cloudflare Pages:
+The `wrangler.jsonc` file must include `pages_build_output_dir` for Cloudflare Pages:
 - **`pages_build_output_dir`:** `.open-next` – Required for Cloudflare Pages to locate the output
-- **`main`:** `.open-next/worker.js` – Entry point for the worker
-- **`assets.directory`:** `.open-next/assets` – Static assets location
+
+**Important:** Do NOT include `main` or `assets` fields in the wrangler config for Pages deployments. These are Workers-only settings and will cause the Pages build to fail with an error like: "Configuration file cannot contain both 'main' and 'pages_build_output_dir'".
 
 Without `pages_build_output_dir`, Cloudflare Pages cannot serve the site (404 errors).
 

@@ -60,3 +60,5 @@ yarn-error.log*
 # audio assets (keep large libraries local only)
 public/assets/audio/full/
 public/assets/audio/**/*.mp3
+# Wrangler generated types
+worker-configuration.d.ts
